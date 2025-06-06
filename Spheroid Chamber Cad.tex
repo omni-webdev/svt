@@ -1,0 +1,36 @@
+/*
+ * CAD Description: Oblate Spheroid Chamber
+ * Format: OpenSCAD (easy for 3D printing & parametric control)
+ * Output: Shell with internal cavity for mercury and feed ports
+ */
+
+$fn = 100;  // Resolution
+
+// === PARAMETERS ===
+outer_r_x = 60;     // mm - equatorial radius
+outer_r_z = 40;     // mm - polar (vertical) radius
+wall_thickness = 5; // mm
+port_r = 6;         // mm - fill/sensor port radius
+port_offset = 45;   // mm from center on Z
+
+// === OUTER SPHEROID ===
+difference() {
+    scale([1, 1, outer_r_z / outer_r_x])
+        sphere(outer_r_x);
+
+    // Inner cavity
+    translate([0, 0, 0])
+    scale([1, 1, (outer_r_z - wall_thickness)/(outer_r_x - wall_thickness)])
+        sphere(outer_r_x - wall_thickness);
+
+    // Fill port (top)
+    translate([0, 0, port_offset])
+        cylinder(h=20, r=port_r, center=true);
+
+    // Sensor port (bottom)
+    translate([0, 0, -port_offset])
+        cylinder(h=20, r=port_r, center=true);
+} 
+
+// Save as .scad and export STL for printing.
+// Suggest PETG or polycarbonate for durability + chemical resistance.
